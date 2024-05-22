@@ -13,7 +13,7 @@ Snake Game is a simple snake game project created using HTML, CSS, and JavaScrip
 
 1. Open the `index.html` file in your web browser.
 2. Select the level of difficulty.
-3. Click the "Start" button to start the game.
+3. Click the "New Game" button to start the game.
 4. Control the snake using the arrow keys on your keyboard.
 5. Collect food to score points and grow.
 6. Avoid hitting yourself or an obstacle.
