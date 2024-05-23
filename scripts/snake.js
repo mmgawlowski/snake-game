@@ -1,4 +1,3 @@
-
 // Get the canvas element by its ID
 let canvas = document.getElementById("gameCanvas");
 // Get the 2D rendering context for the drawing surface of a canvas
@@ -77,6 +76,22 @@ function generateFood() {
     }
 }
 
+// Function to draw the food
+function drawFood() {
+    context.fillStyle = "red";
+    context.fillRect(food.x, food.y, box, box);
+}
+
+// Function to check if the head of the snake has collided with any part of the snake
+function collision(head, array) {
+    for (let i = 0; i < array.length; i++) {
+        if (head.x == array[i].x && head.y == array[i].y) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Function to draw the game state on each frame
 function draw() {
     // Clear the entire canvas
@@ -90,8 +105,7 @@ function draw() {
     }
 
     // Draw the food
-    context.fillStyle = "red";
-    context.fillRect(food.x, food.y, box, box);
+    drawFood();
 
     // Draw the obstacles
     drawObstacles();
@@ -148,15 +162,6 @@ function draw() {
 
     // Add the new head to the front of the snake
     snake.unshift(newHead);
-}
-// Function to check if the head of the snake has collided with any part of the snake
-function collision(head, array) {
-    for (let i = 0; i < array.length; i++) {
-        if (head.x == array[i].x && head.y == array[i].y) {
-            return true;
-        }
-    }
-    return false;
 }
 
 function startGame() {
