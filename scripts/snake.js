@@ -41,6 +41,13 @@ function generateObstacle() {
     };
 }
 
+// Function to generate initial obstacles
+function generateInitialObstacles(numObstacles) {
+    for (let i = 0; i < numObstacles; i++) {
+        obstacles.push(generateObstacle());
+    }
+}
+
 // Draw the obstacles
 function drawObstacles() {
     for (let i = 0; i < obstacles.length; i++) {
@@ -171,32 +178,37 @@ function startGame() {
     snake.length = 0;
     d = '';
     snake[0] = { x: 10 * box, y: 10 * box };
-    food = generateFood();
     obstacles.length = 0;
     document.getElementById('gameOver').style.display = 'none';
 
+    // Get the difficulty level selected by the user
     let difficulty = document.getElementById('difficultySelect').value;
     let speed;
+    let obstaclesNum;
     switch (difficulty) {
         case 'easy':
             speed = 200;
+            obstaclesNum = 0;
             break;
         case 'medium':
             speed = 100;
+            obstaclesNum = 5;
             break;
         case 'hard':
             speed = 50;
+            obstaclesNum = 10;
             break;
     }
+    
+    // Generate initial obstacles
+    generateInitialObstacles(obstaclesNum);
+    
+    // Generate initial food position
+    food = generateFood();
 
     // Clear the game interval if it exists
     if (typeof game !== 'undefined') {
         clearInterval(game);
-    }
-
-    // Generate initial obstacles
-    for (let i = 0; i < 5; i++) {
-        obstacles.push(generateObstacle());
     }
 
     // Start the game loop
