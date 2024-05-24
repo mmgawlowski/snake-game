@@ -18,6 +18,8 @@ let score = 0;
 let highScore = 0;
 // Create an array to hold the obstacles
 let obstacles = [];
+// Get the game button
+let gameButton = document.getElementById('startButton');
 
 // Add an event listener for keydown events
 document.addEventListener("keydown", direction);
@@ -35,34 +37,86 @@ function direction(event) {
     }
 }
 
-// Function to generate a new obstacle
-function generateObstacle() {
-    return {
-        x: Math.floor(Math.random() * 15 + 1) * box,
-        y: Math.floor(Math.random() * 15 + 1) * box
-    };
-}
+    // Function to generate a new obstacle
+    function generateObstacle(numSquares) {
+        let obstacle = [];
+        let initialSquare = {
+            x: Math.floor(Math.random() * 15 + 1) * box,
+            y: Math.floor(Math.random() * 15 + 1) * box
+        };
+        let collisionWithSnake = snake.some(snakePart => snakePart.x === initialSquare.x && snakePart.y === initialSquare.y);
+        let collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === initialSquare.x && square.y === initialSquare.y));
+        if (!collisionWithSnake && !collisionWithObstacle) {
+            obstacle.push(initialSquare);
+        }
+
+        let newSquare = initialSquare;
+        let direction;
+
+        for (let i = 1; i < numSquares; i++) {
+            direction = Math.floor(Math.random() * 4); // Random direction: 0 - right, 1 - down, 2 - left, 3 - up
+            switch (direction) {
+                case 0: // right
+                    newSquare = {
+                        x: newSquare.x + 1 * box,
+                        y: newSquare.y
+                    };
+                    break;
+                case 1: // down
+                    newSquare = {
+                        x: newSquare.x,
+                        y: newSquare.y + 1 * box
+                    };
+                    break;
+                case 2: // left
+                    newSquare = {
+                        x: newSquare.x - 1 * box,
+                        y: newSquare.y
+                    };
+                    break;
+                case 3: // up
+                    newSquare = {
+                        x: newSquare.x,
+                        y: newSquare.y - 1 * box
+                    };
+                    break;
+            }
+            
+            collisionWithSnake = snake.some(snakePart => snakePart.x === newSquare.x && snakePart.y === newSquare.y);
+            collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === newSquare.x && square.y === newSquare.y));
+            if (!collisionWithSnake && !collisionWithObstacle) {
+                obstacle.push(newSquare);
+            }
+        }
+
+        return obstacle;
+    }
 
 // Function to generate initial obstacles
-function generateInitialObstacles(numObstacles) {
+function generateInitialObstacles(numObstacles, numSquares) {
     for (let i = 0; i < numObstacles; i++) {
-        obstacles.push(generateObstacle());
+        let obstacle = generateObstacle(numSquares);
+        obstacles.push(obstacle);
     }
 }
 
 // Draw the obstacles
 function drawObstacles() {
     for (let i = 0; i < obstacles.length; i++) {
-        context.fillStyle = "black";
-        context.fillRect(obstacles[i].x, obstacles[i].y, box, box);
+        for (let j = 0; j < obstacles[i].length; j++) {
+            context.fillStyle = "black";
+            context.fillRect(obstacles[i][j].x, obstacles[i][j].y, box, box);
+        }
     }
 }
 
 // Check if the snake has hit an obstacle
 function hitObstacle(head, obstacles) {
     for (let i = 0; i < obstacles.length; i++) {
-        if (head.x == obstacles[i].x && head.y == obstacles[i].y) {
-            return true;
+        for (let j = 0; j < obstacles[i].length; j++) {
+            if (head.x == obstacles[i][j].x && head.y == obstacles[i][j].y) {
+                return true;
+            }
         }
     }
     return false;
@@ -77,7 +131,7 @@ function generateFood() {
         };
 
         let collisionWithSnake = snake.some(snakePart => snakePart.x === newFood.x && snakePart.y === newFood.y);
-        let collisionWithObstacle = obstacles.some(obstacle => obstacle.x === newFood.x && obstacle.y === newFood.y);
+        let collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === newFood.x && square.y === newFood.y));
 
         if (!collisionWithSnake && !collisionWithObstacle) {
             return newFood;
@@ -87,8 +141,15 @@ function generateFood() {
 
 // Function to draw the food
 function drawFood() {
-    context.fillStyle = "red";
-    context.fillRect(food.x, food.y, box, box);
+// Draw the apple
+context.beginPath();
+context.ellipse(food.x + box / 2, food.y + box / 2, box / 2, box / 3, 0, 0, Math.PI * 2, false);
+context.fillStyle = "red";
+context.fill();
+
+// Draw the apple stem
+context.fillStyle = "black";
+context.fillRect(food.x + box / 2 - box / 10, food.y, box / 5, box / 4);
 }
 
 // Function to check if the head of the snake has collided with any part of the snake
@@ -108,10 +169,30 @@ function draw() {
     
     // Draw each part of the snake
     for (let i = 0; i < snake.length; i++) {
-        // The head of the snake is green, the rest of the body is light green
-        context.fillStyle = (i == 0) ? "green" : "lightgreen";
-        // Draw a box for this part of the snake
-        context.fillRect(snake[i].x, snake[i].y, box, box);
+        if (i == 0) {
+            // Draw the head of the snake
+            context.beginPath();
+            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 2, 0, Math.PI * 2, false);
+            context.fillStyle = "green";
+            context.fill();
+            
+            // Draw the eyes of the snake
+            context.fillStyle = "yellow";
+            context.fillRect(snake[i].x + box / 3, snake[i].y + box / 4, box / 6, box / 6); // Left eye
+            context.fillRect(snake[i].x + 2 * box / 3, snake[i].y + box / 4, box / 6, box / 6); // Right eye
+        } else if (i == snake.length - 1) {
+            // Draw the tail of the snake
+            context.beginPath();
+            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 4, 0, Math.PI * 2, false);
+            context.fillStyle = "lightgreen";
+            context.fill();
+        } else {
+            // Draw the body of the snake
+            context.beginPath();
+            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 3, 0, Math.PI * 2, false);
+            context.fillStyle = "lightgreen";
+            context.fill();
+        }
     }
 
     // Draw the food
@@ -175,6 +256,7 @@ function draw() {
         clearInterval(game);
         document.getElementById('gameOver').style.display = 'block';
         document.getElementById('gameoverSound').play();
+        gameButton.textContent = 'New Game';
     }
 
     // Add the new head to the front of the snake
@@ -191,27 +273,31 @@ function startGame() {
     obstacles.length = 0;
     document.getElementById('gameOver').style.display = 'none';
 
-    // Get the difficulty level selected by the user
-    let difficulty = document.getElementById('difficultySelect').value;
-    let speed;
-    let obstaclesNum;
-    switch (difficulty) {
-        case 'easy':
-            speed = 200;
-            obstaclesNum = 0;
-            break;
-        case 'medium':
-            speed = 100;
-            obstaclesNum = 5;
-            break;
-        case 'hard':
-            speed = 50;
-            obstaclesNum = 10;
-            break;
-    }
+// Get the difficulty level selected by the user
+let difficulty = document.getElementById('difficultySelect').value;
+let speed;
+let obstaclesNum;
+let obstacleSquares;
+switch (difficulty) {
+    case 'easy':
+        speed = 200;
+        obstaclesNum = 0;
+        obstacleSquares = 0;
+        break;
+    case 'medium':
+        speed = 100;
+        obstaclesNum = 5;
+        obstacleSquares = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+        break;
+    case 'hard':
+        speed = 50;
+        obstaclesNum = 10;
+        obstacleSquares = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
+        break;
+}
     
     // Generate initial obstacles
-    generateInitialObstacles(obstaclesNum);
+    generateInitialObstacles(obstaclesNum, obstacleSquares);
     
     // Generate initial food position
     food = generateFood();
@@ -225,5 +311,26 @@ function startGame() {
     game = setInterval(draw, speed);
 }
 
-// Add an event listener for the start button
-document.getElementById('startButton').addEventListener('click', startGame);
+// Function to pause the game
+function pauseGame() {
+    game = clearInterval(game);
+}
+
+// Function to resume the game
+function resumeGame() {
+    game = setInterval(draw, 100);
+}
+
+// Add event listener to the game button
+gameButton.addEventListener('click', function() {
+    if (gameButton.textContent === 'New Game') {
+        startGame();
+        gameButton.textContent = 'Pause Game';
+    } else if (gameButton.textContent === 'Pause Game') {
+        pauseGame();
+        gameButton.textContent = 'Resume Game';
+    } else if (gameButton.textContent === 'Resume Game') {
+        resumeGame();
+        gameButton.textContent = 'Pause Game';
+    }
+});
