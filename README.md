@@ -20,8 +20,9 @@ Snake Game is a simple snake game project created using HTML, CSS, and JavaScrip
 
 ## Notes
 
-- The game background is from [freepik](http://www.freepik.com).
+- The game background is from [freepik.com](http://www.freepik.com).
 - This project was created with the assistance of GitHub Copilot.
+- The sound effects are from [freesound.org](https://freesound.org/) and the 8-bit Video Game Sounds pack by ProjectsU012.
 
 ## Author
 

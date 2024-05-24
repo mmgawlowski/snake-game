@@ -36,10 +36,20 @@ body {
 
 #score {
     font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px #000000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#highScore {
+    font-family: 'Courier New', Courier, monospace;
     font-size: 30px;
     color: #ffffff;
     text-shadow: 2px 2px 4px #000000;
-    margin-bottom: 10px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 #title {
@@ -52,7 +62,7 @@ body {
 
 #instructions {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
+    font-size: 28px;
     color: #ffffff;
     text-shadow: 1px 1px 2px #000000;
     margin-bottom: 20px;
@@ -82,7 +92,7 @@ body {
 
 .difficulty-label {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
+    font-size: 22px;
     color: #ffffff;
     text-shadow: 1px 1px 2px #000000;
     margin-bottom: 10px;

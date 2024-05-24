@@ -12,8 +12,10 @@ let food;
 let d;
 // Variable to hold the game interval
 let game;
-//Variable to hold the score
+// Variable to hold the score
 let score = 0;
+// Variable to hold the high score
+let highScore = 0;
 // Create an array to hold the obstacles
 let obstacles = [];
 
@@ -103,6 +105,7 @@ function collision(head, array) {
 function draw() {
     // Clear the entire canvas
     context.clearRect(0, 0, canvas.width, canvas.height);
+    
     // Draw each part of the snake
     for (let i = 0; i < snake.length; i++) {
         // The head of the snake is green, the rest of the body is light green
@@ -143,12 +146,18 @@ function draw() {
 
     // Check if the snake has eaten the food
     if (snakeX == food.x && snakeY == food.y) {
+        document.getElementById('eatSound').play();
         // Generate new food position
         food = generateFood();
         // Increase the score
         score++;
         // Update the score display
         document.getElementById('score').innerHTML = 'Score: ' + score;
+        // Check if the current score is higher than the high score and update high score if needed
+        if (score > highScore) {
+            highScore = score;
+            document.getElementById('highScore').innerText = 'High Score: ' + highScore;
+        }
     } else {
         // Remove the tail of the snake
         snake.pop();
@@ -165,6 +174,7 @@ function draw() {
         // Stop the game
         clearInterval(game);
         document.getElementById('gameOver').style.display = 'block';
+        document.getElementById('gameoverSound').play();
     }
 
     // Add the new head to the front of the snake
