@@ -125,7 +125,9 @@ function generateObstacle(numSquares) {
 // Function to generate initial obstacles
 function generateInitialObstacles(numObstacles, numSquares) {
     for (let i = 0; i < numObstacles; i++) {
-        let obstacle = generateObstacle(numSquares);
+        // Generate a random number of squares for the obstacle
+        let availableNumSquares = Array.from({length: numSquares}, (_, i) => i + 1);
+        let obstacle = generateObstacle(availableNumSquares[Math.floor(Math.random() * availableNumSquares.length)]);
         obstacles.push(obstacle);
     }
 }
@@ -294,12 +296,12 @@ function startGame() {
         case 'medium':
             speed = 100;
             obstaclesNum = 5;
-            obstacleSquares = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+            obstacleSquares = 3;
             break;
         case 'hard':
             speed = 50;
             obstaclesNum = 10;
-            obstacleSquares = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
+            obstacleSquares = 5;
             break;
     }
 
