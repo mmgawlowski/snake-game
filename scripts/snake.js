@@ -12,6 +12,8 @@ let food;
 let d;
 // Variable to hold the game interval
 let game;
+// Variable to hold the speed of the game
+let speed;
 // Variable to hold the score
 let score = 0;
 // Variable to hold the high score
@@ -20,9 +22,6 @@ let highScore = 0;
 let obstacles = [];
 // Get the game button
 let gameButton = document.getElementById('startButton');
-
-// Add an event listener for keydown events
-document.addEventListener("keydown", direction);
 
 // Function to update the direction based on the key pressed
 function direction(event) {
@@ -37,60 +36,91 @@ function direction(event) {
     }
 }
 
-    // Function to generate a new obstacle
-    function generateObstacle(numSquares) {
-        let obstacle = [];
-        let initialSquare = {
-            x: Math.floor(Math.random() * 15 + 1) * box,
-            y: Math.floor(Math.random() * 15 + 1) * box
-        };
-        let collisionWithSnake = snake.some(snakePart => snakePart.x === initialSquare.x && snakePart.y === initialSquare.y);
-        let collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === initialSquare.x && square.y === initialSquare.y));
-        if (!collisionWithSnake && !collisionWithObstacle) {
-            obstacle.push(initialSquare);
+// Function to draw the snake
+function drawSnake() {
+    // Draw each part of the snake
+    for (let i = 0; i < snake.length; i++) {
+        if (i == 0) {
+            // Draw the head of the snake
+            context.beginPath();
+            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 2, 0, Math.PI * 2, false);
+            context.fillStyle = "green";
+            context.fill();
+
+            // Draw the eyes of the snake
+            context.fillStyle = "yellow";
+            context.fillRect(snake[i].x + box / 3, snake[i].y + box / 4, box / 6, box / 6); // Left eye
+            context.fillRect(snake[i].x + 2 * box / 3, snake[i].y + box / 4, box / 6, box / 6); // Right eye
+        } else if (i == snake.length - 1) {
+            // Draw the tail of the snake
+            context.beginPath();
+            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 4, 0, Math.PI * 2, false);
+            context.fillStyle = "lightgreen";
+            context.fill();
+        } else {
+            // Draw the body of the snake
+            context.beginPath();
+            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 3, 0, Math.PI * 2, false);
+            context.fillStyle = "lightgreen";
+            context.fill();
         }
-
-        let newSquare = initialSquare;
-        let direction;
-
-        for (let i = 1; i < numSquares; i++) {
-            direction = Math.floor(Math.random() * 4); // Random direction: 0 - right, 1 - down, 2 - left, 3 - up
-            switch (direction) {
-                case 0: // right
-                    newSquare = {
-                        x: newSquare.x + 1 * box,
-                        y: newSquare.y
-                    };
-                    break;
-                case 1: // down
-                    newSquare = {
-                        x: newSquare.x,
-                        y: newSquare.y + 1 * box
-                    };
-                    break;
-                case 2: // left
-                    newSquare = {
-                        x: newSquare.x - 1 * box,
-                        y: newSquare.y
-                    };
-                    break;
-                case 3: // up
-                    newSquare = {
-                        x: newSquare.x,
-                        y: newSquare.y - 1 * box
-                    };
-                    break;
-            }
-            
-            collisionWithSnake = snake.some(snakePart => snakePart.x === newSquare.x && snakePart.y === newSquare.y);
-            collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === newSquare.x && square.y === newSquare.y));
-            if (!collisionWithSnake && !collisionWithObstacle) {
-                obstacle.push(newSquare);
-            }
-        }
-
-        return obstacle;
     }
+}
+
+// Function to generate a new obstacle
+function generateObstacle(numSquares) {
+    let obstacle = [];
+    let initialSquare = {
+        x: Math.floor(Math.random() * 15 + 1) * box,
+        y: Math.floor(Math.random() * 15 + 1) * box
+    };
+    let collisionWithSnake = snake.some(snakePart => snakePart.x === initialSquare.x && snakePart.y === initialSquare.y);
+    let collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === initialSquare.x && square.y === initialSquare.y));
+    if (!collisionWithSnake && !collisionWithObstacle) {
+        obstacle.push(initialSquare);
+    }
+
+    let newSquare = initialSquare;
+    let direction;
+
+    for (let i = 1; i < numSquares; i++) {
+        direction = Math.floor(Math.random() * 4); // Random direction: 0 - right, 1 - down, 2 - left, 3 - up
+        switch (direction) {
+            case 0: // right
+                newSquare = {
+                    x: newSquare.x + 1 * box,
+                    y: newSquare.y
+                };
+                break;
+            case 1: // down
+                newSquare = {
+                    x: newSquare.x,
+                    y: newSquare.y + 1 * box
+                };
+                break;
+            case 2: // left
+                newSquare = {
+                    x: newSquare.x - 1 * box,
+                    y: newSquare.y
+                };
+                break;
+            case 3: // up
+                newSquare = {
+                    x: newSquare.x,
+                    y: newSquare.y - 1 * box
+                };
+                break;
+        }
+
+        collisionWithSnake = snake.some(snakePart => snakePart.x === newSquare.x && snakePart.y === newSquare.y);
+        collisionWithObstacle = obstacles.some(obstacle => obstacle.some(square => square.x === newSquare.x && square.y === newSquare.y));
+        if (!collisionWithSnake && !collisionWithObstacle) {
+            obstacle.push(newSquare);
+        }
+    }
+
+    return obstacle;
+}
 
 // Function to generate initial obstacles
 function generateInitialObstacles(numObstacles, numSquares) {
@@ -100,7 +130,7 @@ function generateInitialObstacles(numObstacles, numSquares) {
     }
 }
 
-// Draw the obstacles
+// Function to draw the obstacles
 function drawObstacles() {
     for (let i = 0; i < obstacles.length; i++) {
         for (let j = 0; j < obstacles[i].length; j++) {
@@ -141,15 +171,15 @@ function generateFood() {
 
 // Function to draw the food
 function drawFood() {
-// Draw the apple
-context.beginPath();
-context.ellipse(food.x + box / 2, food.y + box / 2, box / 2, box / 3, 0, 0, Math.PI * 2, false);
-context.fillStyle = "red";
-context.fill();
+    // Draw the apple
+    context.beginPath();
+    context.ellipse(food.x + box / 2, food.y + box / 2, box / 2, box / 3, 0, 0, Math.PI * 2, false);
+    context.fillStyle = "red";
+    context.fill();
 
-// Draw the apple stem
-context.fillStyle = "black";
-context.fillRect(food.x + box / 2 - box / 10, food.y, box / 5, box / 4);
+    // Draw the apple stem
+    context.fillStyle = "black";
+    context.fillRect(food.x + box / 2 - box / 10, food.y, box / 5, box / 4);
 }
 
 // Function to check if the head of the snake has collided with any part of the snake
@@ -166,34 +196,9 @@ function collision(head, array) {
 function draw() {
     // Clear the entire canvas
     context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw each part of the snake
-    for (let i = 0; i < snake.length; i++) {
-        if (i == 0) {
-            // Draw the head of the snake
-            context.beginPath();
-            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 2, 0, Math.PI * 2, false);
-            context.fillStyle = "green";
-            context.fill();
-            
-            // Draw the eyes of the snake
-            context.fillStyle = "yellow";
-            context.fillRect(snake[i].x + box / 3, snake[i].y + box / 4, box / 6, box / 6); // Left eye
-            context.fillRect(snake[i].x + 2 * box / 3, snake[i].y + box / 4, box / 6, box / 6); // Right eye
-        } else if (i == snake.length - 1) {
-            // Draw the tail of the snake
-            context.beginPath();
-            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 4, 0, Math.PI * 2, false);
-            context.fillStyle = "lightgreen";
-            context.fill();
-        } else {
-            // Draw the body of the snake
-            context.beginPath();
-            context.arc(snake[i].x + box / 2, snake[i].y + box / 2, box / 3, 0, Math.PI * 2, false);
-            context.fillStyle = "lightgreen";
-            context.fill();
-        }
-    }
+
+    // Draw the snake
+    drawSnake();
 
     // Draw the food
     drawFood();
@@ -273,32 +278,34 @@ function startGame() {
     obstacles.length = 0;
     document.getElementById('gameOver').style.display = 'none';
 
-// Get the difficulty level selected by the user
-let difficulty = document.getElementById('difficultySelect').value;
-let speed;
-let obstaclesNum;
-let obstacleSquares;
-switch (difficulty) {
-    case 'easy':
-        speed = 200;
-        obstaclesNum = 0;
-        obstacleSquares = 0;
-        break;
-    case 'medium':
-        speed = 100;
-        obstaclesNum = 5;
-        obstacleSquares = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
-        break;
-    case 'hard':
-        speed = 50;
-        obstaclesNum = 10;
-        obstacleSquares = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
-        break;
-}
-    
+    // Add an event listener for keydown events
+    document.addEventListener("keydown", direction);
+
+    // Get the difficulty level selected by the user
+    let difficulty = document.getElementById('difficultySelect').value;
+    let obstaclesNum;
+    let obstacleSquares;
+    switch (difficulty) {
+        case 'easy':
+            speed = 200;
+            obstaclesNum = 0;
+            obstacleSquares = 0;
+            break;
+        case 'medium':
+            speed = 100;
+            obstaclesNum = 5;
+            obstacleSquares = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+            break;
+        case 'hard':
+            speed = 50;
+            obstaclesNum = 10;
+            obstacleSquares = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
+            break;
+    }
+
     // Generate initial obstacles
     generateInitialObstacles(obstaclesNum, obstacleSquares);
-    
+
     // Generate initial food position
     food = generateFood();
 
@@ -314,15 +321,17 @@ switch (difficulty) {
 // Function to pause the game
 function pauseGame() {
     game = clearInterval(game);
+    document.removeEventListener("keydown", direction);
 }
 
 // Function to resume the game
 function resumeGame() {
-    game = setInterval(draw, 100);
+    game = setInterval(draw, speed);
+    document.addEventListener("keydown", direction);
 }
 
 // Add event listener to the game button
-gameButton.addEventListener('click', function() {
+gameButton.addEventListener('click', function () {
     if (gameButton.textContent === 'New Game') {
         startGame();
         gameButton.textContent = 'Pause Game';
