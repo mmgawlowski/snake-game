@@ -35,21 +35,30 @@ body {
 }
 
 #score {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 24px;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px #000000;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #212529;
+    margin-bottom: 20px;
 }
 
-#highScore {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 30px;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px #000000;
-    text-align: center;
-    margin-top: 20px;
+#highScores {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+#highScores div {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #212529;
 }
 
 #title {

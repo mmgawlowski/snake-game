@@ -16,8 +16,10 @@ let game;
 let scoreCounter = document.getElementById('score');
 // Variable to hold the score
 let score = 0;
-// Variable to hold the high score
-let highScore = 0;
+// Variables to hold the high score
+let highScoreEasy = 0;
+let highScoreMedium = 0;
+let highScoreHard = 0;
 // Create an array to hold the obstacles
 let obstacles = [];
 // Get the game button
@@ -228,11 +230,8 @@ function checkFood(snakeX, snakeY) {
         score++;
         // Update the score display
         scoreCounter.textContent = 'Score: ' + score;
-        // Check if the current score is higher than the high score and update high score if needed
-        if (score > highScore) {
-            highScore = score;
-            document.getElementById('highScore').textContent = 'High Score: ' + highScore;
-        }
+        // Update the high score display
+        updateHighScores();
         return true;
     } else {
         // Remove the tail of the snake
@@ -249,6 +248,20 @@ function collision(head, array) {
         }
     }
     return false;
+}
+
+// Function to update the high scores
+function updateHighScores() {
+    if (previousDifficulty === 'easy' && score > highScoreEasy) {
+        highScoreEasy = score;
+        document.getElementById('highScoreEasy').textContent = 'High Score (Easy): ' + highScoreEasy;
+    } else if (previousDifficulty === 'medium' && score > highScoreMedium) {
+        highScoreMedium = score;
+        document.getElementById('highScoreMedium').textContent = 'High Score (Medium): ' + highScoreMedium;
+    } else if (previousDifficulty === 'hard' && score > highScoreHard) {
+        highScoreHard = score;
+        document.getElementById('highScoreHard').textContent = 'High Score (Hard): ' + highScoreHard;
+    }
 }
 
 // Function to draw the game state on each frame
@@ -396,7 +409,8 @@ pauseGameButton.addEventListener('click', function () {
 difficultySelect.addEventListener('change', function () {
     if (pauseGameButton.style.visibility === 'visible') {
         if (confirm('Are you sure you want to change the difficulty level? Your current game progress will be lost.')) {
-            resetGameState();
+            startGame();
+            difficultySelect.blur();
         } else {
             difficultySelect.value = previousDifficulty;
         }
