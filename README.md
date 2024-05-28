@@ -1,6 +1,6 @@
 # Snake Game
 
-Snake Game is a simple snake game project created using HTML, CSS, and JavaScript. The game includes three levels of difficulty: easy, medium, and hard, which determine the speed of the snake's movement.
+Snake Game is a simple snake game project created using HTML, CSS, and JavaScript. The game includes three levels of difficulty: easy, medium, and hard, which determine the speed of the snake's movement and the number of obstacles.
 
 ## Features
 
@@ -20,8 +20,8 @@ Snake Game is a simple snake game project created using HTML, CSS, and JavaScrip
 
 ## Notes
 
-- The game background is from [freepik.com](http://www.freepik.com).
 - This project was created with the assistance of GitHub Copilot.
+- The game background is from [freepik.com](http://www.freepik.com).
 - The sound effects are from [freesound.org](https://freesound.org/) and the 8-bit Video Game Sounds pack by ProjectsU012.
 
 ## Author

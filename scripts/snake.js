@@ -48,10 +48,10 @@ function resetGameState() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     pauseGameButton.style.visibility = 'hidden';
     pauseGameButton.textContent = 'Pause Game';
-    removeEventListener('keydown', direction);
+    document.removeEventListener('keydown', direction);
 
     // Clear the game interval if it exists
-    if (typeof game !== 'undefined') {
+    if (game) {
         clearInterval(game);
     }
 }
@@ -242,12 +242,7 @@ function checkFood(snakeX, snakeY) {
 
 // Function to check if the head of the snake has collided with any part of the snake
 function collision(head, array) {
-    for (let i = 0; i < array.length; i++) {
-        if (head.x == array[i].x && head.y == array[i].y) {
-            return true;
-        }
-    }
-    return false;
+    return array.some(part => head.x === part.x && head.y === part.y);
 }
 
 // Function to update the high scores
