@@ -8,6 +8,9 @@ Snake Game is a simple snake game project created using HTML, CSS, and JavaScrip
 - The difficulty level can be selected before starting the game.
 - The game ends when the snake hits itself or an obstacle.
 - A "Game Over" message appears after losing the game.
+- The best score is saved for each difficulty level.
+- The game can be paused at any time.
+- A warning message is displayed before changing the difficulty level during an active game.
 
 ## How to Play
 
